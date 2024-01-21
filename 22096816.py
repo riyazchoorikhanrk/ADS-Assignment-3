@@ -7,8 +7,6 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
-
-# Path to your CSV file
 file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 
 # Open and read the file to inspect its content
@@ -74,7 +72,6 @@ for n_clusters in range(1, 11):
     kmeans.fit(normalized_data)
     inertia.append(kmeans.inertia_)
 
-
 # Plotting the elbow method to find the optimal number of clusters
 plt.figure(figsize=(8, 5))
 plt.plot(range(1, 11), inertia, marker='o', linestyle='--')
@@ -85,13 +82,11 @@ plt.xticks(range(1, 11))
 plt.grid(True)
 plt.show()
 
-from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 
 # Assuming you already have your data and clustering results in normalized_data and kmeans
 
 # Fit KMeans with the chosen number of clusters
-n_clusters = 4  # Change this to your chosen number of clusters
+n_clusters = 10  # chosen number of clusters
 kmeans = KMeans(n_clusters=n_clusters, random_state=42)
 cluster_labels = kmeans.fit_predict(normalized_data)
 
@@ -99,11 +94,13 @@ cluster_labels = kmeans.fit_predict(normalized_data)
 plt.figure(figsize=(8, 6))
 
 # Scatter plot for the first two dimensions of the normalized data
-plt.scatter(normalized_data[:, 0], normalized_data[:, 1], c=cluster_labels, cmap='viridis', s=50, alpha=0.5, label='Data Points')
+plt.scatter(normalized_data[:, 0], normalized_data[:, 1],
+            c=cluster_labels, cmap='viridis', s=50, alpha=0.5, label='Data Points')
 
 # Plotting centroids
 centroids = kmeans.cluster_centers_
-plt.scatter(centroids[:, 0], centroids[:, 1], c='red', marker='x', s=200, label='Centroids')
+plt.scatter(centroids[:, 0], centroids[:, 1], c='red',
+            marker='x', s=200, label='Centroids')
 
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
@@ -111,14 +108,18 @@ plt.title('KMeans Clustering')
 plt.legend()
 plt.show()
 
+
 # Display column names
 print(data.columns)
+print(data.dtypes)
+
 
 # Define the columns of interest (years range from 1960 to 2022)
 years_columns = [str(year) for year in range(1960, 2023)]
 
 # Filter the DataFrame to keep only necessary columns
 country_data_years = data[years_columns]
+
 
 # Drop rows with any NaN values in the selected year columns
 country_data_cleaned = country_data_years.dropna()
@@ -129,16 +130,17 @@ values = country_data_cleaned.values.flatten()  # Flatten the selected values
 
 # Plotting and curve fitting can follow using the 'years' and 'values' variables
 
-import pandas as pd
 
 # Replace the file path with your actual file location
 file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 
 # Read the CSV file into a DataFrame
-data = pd.read_csv(file_path, skiprows=4)  # Skip the first 4 rows as they contain metadata
+# Skip the first 4 rows as they contain metadata
+data = pd.read_csv(file_path, skiprows=4)
 
 # Display the first few rows of the DataFrame
 print(data.head())
+
 
 # Calculate the average forest area for each country
 data['Average'] = data.iloc[:, 5:].mean(axis=1)
@@ -146,7 +148,8 @@ data['Average'] = data.iloc[:, 5:].mean(axis=1)
 # Display the country names and their corresponding average forest area
 print(data[['Country Name', 'Average']])
 
-# Let's say you want to extract data for 'Aruba'
+
+# extract data for 'Aruba'
 country_name = 'Aruba'
 
 # Filter the data for the specified country
@@ -155,32 +158,38 @@ country_data = data[data['Country Name'] == country_name]
 # Display the extracted data for the country
 print(country_data)
 
-import numpy as np
-from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 
 # Aruba's forest area data
-years = np.array([1960, 1970, 1980, 1990, 2000, 2010, 2020])  # Years from the dataset
-forest_area = np.array([np.nan, np.nan, np.nan, np.nan, 4.2, 4.2, 4.2])  # Forest area values for Aruba
+years = np.array([1960, 1970, 1980, 1990, 2000, 2010, 2020]
+                 )  # Years from the dataset
+# Forest area values for Aruba
+forest_area = np.array([np.nan, np.nan, np.nan, np.nan, 4.2, 4.2, 4.2])
 
 # Define a linear function
+
+
 def linear_model(x, m, c):
     return m * x + c
 
+
 # Fit the linear model to the data
-params, _ = curve_fit(linear_model, years[4:], forest_area[4:])  # Considering data from 2000 onwards
+# Considering data from 2000 onwards
+params, _ = curve_fit(linear_model, years[4:], forest_area[4:])
 
 # Get the parameters (slope and intercept)
 slope, intercept = params
 
 # Predicting for future years
-future_years = np.array([2025, 2030])  # Replace this with the years you want to predict for
+# Replace this with the years you want to predict for
+future_years = np.array([2025, 2030])
 predicted_forest_area = linear_model(future_years, slope, intercept)
 
 # Plotting the data and the fitted line
 plt.scatter(years, forest_area, label='Actual Data')
-plt.plot(years, linear_model(years, slope, intercept), color='red', label='Fitted Line')
-plt.scatter(future_years, predicted_forest_area, color='green', label='Predicted Data')
+plt.plot(years, linear_model(years, slope, intercept),
+         color='red', label='Fitted Line')
+plt.scatter(future_years, predicted_forest_area,
+            color='green', label='Predicted Data')
 plt.xlabel('Year')
 plt.ylabel('Forest Area (sq. km)')
 plt.title('Forest Area Prediction for Aruba')
@@ -188,49 +197,64 @@ plt.legend()
 plt.show()
 
 
-
 # Replace the file path with your actual file location
 file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 
 # Read the CSV file into a DataFrame
-df = pd.read_csv(file_path, skiprows=4)  # Skip the first 4 rows as they contain metadata
+# Skip the first 4 rows as they contain metadata
+df = pd.read_csv(file_path, skiprows=4)
 
 # Display the first few rows of the DataFrame
 print(data.head())
 
 
-# Load the data from the CSV file
+# Loading the data from the CSV file
 file_path = "API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 data = pd.read_csv(file_path, skiprows=4)  # Skip first 4 rows with metadata
 
-# Drop unnecessary columns and rows
-data.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'], inplace=True)
-data.drop([0, 1], inplace=True)  # Drop first two rows as they contain non-numeric data
+# Dropping unnecessary columns and rows
+data.drop(columns=['Country Code', 'Indicator Name',
+          'Indicator Code'], inplace=True)
+# Dropping first two rows as they contain non-numeric data
+data.drop([0, 1], inplace=True)
 
-# Set 'Country Name' as the index
+# Setting 'Country Name' as the index
 data.set_index('Country Name', inplace=True)
 
-# Remove columns containing non-numeric data
+# Removing columns containing non-numeric data
 data = data.apply(pd.to_numeric, errors='coerce')
 
-# Drop columns with all NaN values
+# Dropping columns with all NaN values
 data.dropna(axis=1, how='all', inplace=True)
 
+# Calculating the total forest area for each country
+data['Total'] = data.sum(axis=1)
+
+# Sorting by total forest area and select top 5 countries
+top_5_countries = data.sort_values(by='Total', ascending=False).head(20).index
+data_top_5 = data.loc[top_5_countries]
+
+print(top_5_countries)
+print(data_top_5)
+
 # Transpose the data for easier plotting
-data_transposed = data.T
+data_top_5_transposed = data_top_5.T
 
 # Convert index to datetime
-data_transposed.index = pd.to_datetime(data_transposed.index, errors='coerce')
+data_top_5_transposed.index = pd.to_datetime(
+    data_top_5_transposed.index, errors='coerce')
 
 # Plotting
 plt.figure(figsize=(10, 6))
-for country in data_transposed.columns:
-    plt.plot(data_transposed.index, data_transposed[country], label=country)
+for country in data_top_5_transposed.columns:
+    plt.plot(data_top_5_transposed.index,
+             data_top_5_transposed[country], label=country)
 
-plt.title('Forest Area Over Time')
+plt.title('Forest Area Over Time (Top 5 Countries)')
 plt.xlabel('Year')
 plt.ylabel('Forest Area (sq. km)')
-plt.legend()
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))  # Adjust legend position
+
 plt.grid(True)
 plt.show()
 
@@ -239,26 +263,13 @@ top_10_countries = data.iloc[:, :-1].sum().nlargest(10).index
 data_top_10 = data[top_10_countries]
 
 plt.figure(figsize=(10, 6))
-for country in top_10_countries:
-    plt.fill_between(data_top_10.index, data_top_10[country], label=country, alpha=0.5)
-
-plt.title('Forest Area Over Time (Top 10 Countries)')
-plt.xlabel('Year')
-plt.ylabel('Forest Area (sq. km)')
-plt.legend()
-plt.grid(True)
-plt.xticks(rotation=95)
-
-plt.show()
-
-
-plt.figure(figsize=(10, 6))
 data_top_10.sum().plot(kind='bar')
 plt.title('Total Forest Area by Top 10 Countries')
 plt.xlabel('Country')
 plt.ylabel('Total Forest Area (sq. km)')
 plt.grid(axis='y')
 plt.show()
+
 
 top_10_countries = data.iloc[:, :-1].sum().nlargest(10).index
 data_top_10 = data[top_10_countries]
@@ -272,19 +283,7 @@ plt.xticks(rotation=45)
 plt.grid(axis='y')
 plt.show()
 
-top_10_countries = data.iloc[:, :-1].sum().nlargest(10).index
-data_top_10 = data[top_10_countries]
 
-plt.figure(figsize=(10, 6))
-plt.violinplot(data_top_10.values.T)
-plt.title('Distribution of Forest Area by Top 10 Countries')
-plt.xlabel('Countries')
-plt.ylabel('Forest Area (sq. km)')
-plt.xticks(ticks=range(1, len(top_10_countries) + 1), labels=top_10_countries, rotation=45)
-plt.grid(axis='y')
-plt.show()
-
-import seaborn as sns
 top_10_countries = data.iloc[:, :-1].sum().nlargest(10).index
 data_top_10 = data[top_10_countries]
 

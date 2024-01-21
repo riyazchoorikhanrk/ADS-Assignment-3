@@ -7,27 +7,23 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
-file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
+# User-Defined Function for Curve Fitting
 
-# Open and read the file to inspect its content
-with open(file_path, 'r') as file:
-    for i in range(5):  # Display the first 5 lines
-        line = file.readline()
-        print(line)
 
-# Path to your CSV file
-file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
+def fit_curve(x, y, model_func):
+    params, _ = curve_fit(model_func, x, y)
+    return params
 
-# Open and read the file to inspect its content, skipping the initial characters
-with open(file_path, 'r', encoding='utf-8-sig') as file:
-    # Skip the initial lines with encoding characters
-    for i in range(3):
-        next(file)
+# User-Defined Function for Data Preprocessing
 
-    # Display the next 5 lines after skipping the initial lines
-    for i in range(5):
-        line = file.readline()
-        print(line)
+
+def preprocess_data(data):
+    numeric_data = data.select_dtypes(include='number')
+    imputer = SimpleImputer(strategy='mean')
+    data_for_clustering_imputed = imputer.fit_transform(numeric_data)
+    scaler = StandardScaler()
+    normalized_data = scaler.fit_transform(data_for_clustering_imputed)
+    return normalized_data
 
 
 # File path
@@ -36,9 +32,6 @@ file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 # Load the dataset skipping the first few rows of metadata
 data = pd.read_csv(file_path, skiprows=4)
 
-# Display the first few rows of the dataset
-print(data.head())
-
 # Selecting relevant columns
 relevant_columns = ['Country Name'] + [str(year) for year in range(1990, 2023)]
 relevant_columns += ['Indicator Name']  # Add 'Indicator Name' column
@@ -46,18 +39,12 @@ relevant_columns += ['Indicator Name']  # Add 'Indicator Name' column
 # Creating a new DataFrame with relevant columns
 relevant_data = data[relevant_columns]
 
-# Displaying the first few rows of the new DataFrame
-print(relevant_data.head())
-
 # Check for missing values in the dataset
 missing_values = relevant_data.isnull().sum()
 print(missing_values)
 
-
-# Select numeric columns and drop non-numeric ones
+# User-Defined Function for Data Preprocessing
 numeric_data = relevant_data.select_dtypes(include='number')
-
-# Impute missing values with mean for numeric columns only
 imputer = SimpleImputer(strategy='mean')
 data_for_clustering_imputed = imputer.fit_transform(numeric_data)
 
@@ -82,6 +69,8 @@ plt.xticks(range(1, 11))
 plt.grid(True)
 plt.show()
 
+# User-Defined Function for Data Preprocessing
+processed_data = preprocess_data(relevant_data)
 
 # Assuming you already have your data and clustering results in normalized_data and kmeans
 
@@ -108,7 +97,6 @@ plt.title('KMeans Clustering')
 plt.legend()
 plt.show()
 
-
 # Display column names
 print(data.columns)
 print(data.dtypes)
@@ -125,12 +113,14 @@ country_data_years = data[years_columns]
 country_data_cleaned = country_data_years.dropna()
 
 # Prepare the data for curve fitting
-years = range(1960, 2023)  # Assuming years range from 1960 to 2022
-values = country_data_cleaned.values.flatten()  # Flatten the selected values
+# years range from 1960 to 2022
+years = range(1960, 2023)
+
+# Flatten the selected values
+values = country_data_cleaned.values.flatten()
+
 
 # Plotting and curve fitting can follow using the 'years' and 'values' variables
-
-
 # Replace the file path with your actual file location
 file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 
@@ -231,7 +221,7 @@ data.dropna(axis=1, how='all', inplace=True)
 data['Total'] = data.sum(axis=1)
 
 # Sorting by total forest area and select top 5 countries
-top_5_countries = data.sort_values(by='Total', ascending=False).head(20).index
+top_5_countries = data.sort_values(by='Total', ascending=False).head(5).index
 data_top_5 = data.loc[top_5_countries]
 
 print(top_5_countries)

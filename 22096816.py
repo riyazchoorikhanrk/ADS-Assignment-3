@@ -1,4 +1,3 @@
-
 import seaborn as sns
 from scipy.optimize import curve_fit
 import numpy as np
@@ -190,8 +189,6 @@ plt.show()
 
 
 
-import pandas as pd
-
 # Replace the file path with your actual file location
 file_path = r"API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
 
@@ -201,8 +198,6 @@ df = pd.read_csv(file_path, skiprows=4)  # Skip the first 4 rows as they contain
 # Display the first few rows of the DataFrame
 print(data.head())
 
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # Load the data from the CSV file
 file_path = "API_AG.LND.FRST.K2_DS2_en_csv_v2_6302271.csv"
